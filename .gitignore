@@ -1,0 +1,15 @@
+# Python and Virtual Environments
+__pycache__/
+*.pyc
+venv/
+env/
+.env
+
+# Application Specific Folders
+PDF_Reports/
+Organized_Videos/
+*.mp4
+*.pdf
+
+# ZIP output
+Mettle_Videos.zip
