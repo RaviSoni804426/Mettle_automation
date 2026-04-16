@@ -106,8 +106,6 @@ if uploaded_files:
                                 break
                             
                     candidate_name = re.sub(r'[\\/*?:"<>|]', "", candidate_name).strip()
-                    person_folder = os.path.join(output_dir, candidate_name)
-                    os.makedirs(person_folder, exist_ok=True)
                     
                     # 2. Find Links
                     found_links = []
@@ -125,7 +123,7 @@ if uploaded_files:
                     # 3. Download Videos to temp folder
                     for j, url in enumerate(found_links[:3], 1):
                         save_filename = f"{candidate_name.lower()}_video_{j}.mp4"
-                        save_path = os.path.join(person_folder, save_filename)
+                        save_path = os.path.join(output_dir, save_filename)
                         
                         try:
                             with st.spinner(f"Downloading {save_filename}..."):

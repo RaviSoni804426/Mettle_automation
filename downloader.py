@@ -152,10 +152,6 @@ class DownloaderApp:
                                 break
                     
                     candidate_name = re.sub(r'[\\/*?:"<>|]', "", candidate_name).strip()
-                    person_folder = os.path.join(output_d, candidate_name)
-                    
-                    if not os.path.exists(person_folder):
-                        os.makedirs(person_folder)
 
                     found_links = []
                     for page in pdf.pages:
@@ -170,7 +166,7 @@ class DownloaderApp:
 
                     for i, url in enumerate(found_links[:3], 1):
                         save_filename = f"{candidate_name.lower()}_video_{i}.mp4"
-                        save_path = os.path.join(person_folder, save_filename)
+                        save_path = os.path.join(output_d, save_filename)
                         
                         if os.path.exists(save_path):
                             self.log(f"  -> ⏭️ {save_filename} already exist. Skipping...")
