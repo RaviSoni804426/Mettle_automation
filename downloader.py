@@ -123,8 +123,14 @@ class DownloaderApp:
                     lines = first_page_text.split('\n')
                     candidate_name = "Unknown"
                     for line in lines:
-                        if "|" in line:
-                            candidate_name = line.split('|')[0].strip()
+                        if "@" in line:
+                            # Clean up potential spaces from PDF extraction
+                            clean_line = line.replace(" ", "")
+                            match = re.search(r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}', clean_line)
+                            if match:
+                                candidate_name = match.group(0).lower()
+                            else:
+                                candidate_name = clean_line.lower()
                             break
                     
                     candidate_name = re.sub(r'[\\/*?:"<>|]', "", candidate_name).strip()
