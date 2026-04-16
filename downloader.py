@@ -132,7 +132,7 @@ class DownloaderApp:
                     email_match = re.search(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', first_page_text)
                     email_id = email_match.group(0).strip().lower() if email_match else candidate_name.lower()
                     
-                    person_folder = os.path.join(output_d, email_id)
+                    person_folder = os.path.join(output_d, candidate_name)
                     
                     if not os.path.exists(person_folder):
                         os.makedirs(person_folder)

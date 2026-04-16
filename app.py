@@ -86,7 +86,7 @@ if uploaded_files:
                     email_match = re.search(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', first_page_text)
                     email_id = email_match.group(0).strip().lower() if email_match else candidate_name.lower()
                     
-                    person_folder = os.path.join(output_dir, email_id)
+                    person_folder = os.path.join(output_dir, candidate_name)
                     os.makedirs(person_folder, exist_ok=True)
                     
                     # 2. Find Links
