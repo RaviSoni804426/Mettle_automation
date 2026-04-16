@@ -5,6 +5,10 @@ import tkinter as tk
 from tkinter import filedialog, ttk
 import pdfplumber
 import requests
+import logging
+
+# Mute FontBBox errors from pdfminer
+logging.getLogger("pdfminer").setLevel(logging.CRITICAL)
 
 class DownloaderApp:
     def __init__(self, root):
@@ -120,7 +124,15 @@ class DownloaderApp:
                         self.log(f"  -> ⚠️ Could not extract text from {file_name}")
                         continue
 
-                    lines = first_page_text.split('\n')
+                    # Try to get text from Page 2 (index 1), fallback to Page 1
+                    try:
+                        target_page_text = pdf.pages[1].extract_text()
+                        if not target_page_text:
+                            target_page_text = first_page_text
+                    except IndexError:
+                        target_page_text = first_page_text
+                        
+                    lines = target_page_text.split('\n')
                     candidate_name = "Unknown"
                     for line in lines:
                         if "@" in line:
@@ -132,6 +144,12 @@ class DownloaderApp:
                             else:
                                 candidate_name = clean_line.lower()
                             break
+                            
+                    if candidate_name == "Unknown":
+                        for line in first_page_text.split('\n'):
+                            if "|" in line:
+                                candidate_name = line.split('|')[0].strip()
+                                break
                     
                     candidate_name = re.sub(r'[\\/*?:"<>|]', "", candidate_name).strip()
                     person_folder = os.path.join(output_d, candidate_name)

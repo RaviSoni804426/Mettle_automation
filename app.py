@@ -5,6 +5,10 @@ import os
 import re
 import shutil
 import tempfile
+import logging
+
+# Mute FontBBox errors from pdfminer
+logging.getLogger("pdfminer").setLevel(logging.CRITICAL)
 
 st.set_page_config(page_title="Mettle Video Downloader", page_icon="🎥", layout="centered")
 
@@ -73,8 +77,15 @@ if uploaded_files:
                         log_container.warning(f"⚠️ Could not extract text from {uploaded_file.name}")
                         continue
                         
-                    # 1. Parse Candidate Name
-                    lines = first_page_text.split('\n')
+                    # Try to get text from Page 2 (index 1), fallback to Page 1 (index 0)
+                    try:
+                        target_page_text = pdf.pages[1].extract_text()
+                        if not target_page_text:
+                            target_page_text = first_page_text
+                    except IndexError:
+                        target_page_text = first_page_text
+                        
+                    lines = target_page_text.split('\n')
                     candidate_name = "Unknown"
                     for line in lines:
                         if "@" in line:
@@ -86,6 +97,13 @@ if uploaded_files:
                             else:
                                 candidate_name = clean_line.lower()
                             break
+                    
+                    if candidate_name == "Unknown":
+                        # If email still isn't found, try first page as another fallback
+                        for line in first_page_text.split('\n'):
+                            if "|" in line:
+                                candidate_name = line.split('|')[0].strip()
+                                break
                             
                     candidate_name = re.sub(r'[\\/*?:"<>|]', "", candidate_name).strip()
                     person_folder = os.path.join(output_dir, candidate_name)
