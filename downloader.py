@@ -128,10 +128,6 @@ class DownloaderApp:
                             break
                     
                     candidate_name = re.sub(r'[\\/*?:"<>|]', "", candidate_name).strip()
-                    
-                    email_match = re.search(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', first_page_text)
-                    email_id = email_match.group(0).strip().lower() if email_match else candidate_name.lower()
-                    
                     person_folder = os.path.join(output_d, candidate_name)
                     
                     if not os.path.exists(person_folder):
@@ -149,7 +145,7 @@ class DownloaderApp:
                         self.log("  -> ⚠️ No matching video links found.")
 
                     for i, url in enumerate(found_links[:3], 1):
-                        save_filename = f"{email_id}_video_{i}.mp4"
+                        save_filename = f"{candidate_name.lower()}_video_{i}.mp4"
                         save_path = os.path.join(person_folder, save_filename)
                         
                         if os.path.exists(save_path):
